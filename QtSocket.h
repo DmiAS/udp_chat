@@ -5,13 +5,10 @@
 #include <QUdpSocket>
 
 class QtSocket: public Socket{
-//    Q_OBJECT
+    Q_OBJECT
 public:
 
-    QtSocket(){
-        socket = new QUdpSocket(this);
-        QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(readDatagrams()));
-    }
+    QtSocket();
 
     void close() override;
 
@@ -19,9 +16,7 @@ public:
 
     void send(const QByteArray &msg, const QHostAddress &address, const quint16 &port) override;
 
-    ~QtSocket() override{
-        this->close();
-    }
+    ~QtSocket() override;
 
 private slots:
     void readDatagrams();
@@ -29,29 +24,5 @@ private slots:
 private:
     QUdpSocket *socket;
 };
-
-
-void QtSocket::bind(const QHostAddress &address, const quint16 &port) {
-    socket->bind(address, port);
-};
-
-void QtSocket::send(const QByteArray &msg, const QHostAddress &address, const quint16 &port){
-    socket->writeDatagram(msg, address, port);
-}
-
-void QtSocket::readDatagrams(){
-    QHostAddress sender;
-    quint16 senderPort;
-    while(socket->hasPendingDatagrams()){
-        QByteArray dgram;
-        dgram.resize(socket->pendingDatagramSize());
-        socket->readDatagram(dgram.data(), dgram.size(), &sender, &senderPort);
-//        emit dgramrecv(dgram, sender, senderPort);
-    }
-}
-
-void QtSocket::close(){
-    socket->close();
-}
 
 #endif // QTSOCKET_H

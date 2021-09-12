@@ -5,36 +5,23 @@
 #include "QtSocket.h"
 #include <QDebug>
 
-class QServer{
+class QServer: public QObject{
+    Q_OBJECT
 public:
-    QServer(const QHostAddress &address, const quint16 &port){
-        socket = new QtSocket;
-        socket->bind(address, port);
-        serv = new QSerializer;
-    }
+    QServer(const QHostAddress &address, const quint16 &port);
 
     void start();
     void stop();
-    ~QServer(){}
+    ~QServer() = default;
 
 private:
     QSerializer *serv;
-    QtSocket* socket;
+    Socket* socket;
     bool active = true;
+
+private slots:
+    void recv(QByteArray, QHostAddress, quint16);
 };
-
-
-void QServer::start(){
-}
-
-void QServer::stop(){
-
-}
-
-//void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
-//    auto msg = serv->deserialize(data);
-//    qDebug() << addr << port << msg.buf;
-//}
 
 
 #endif // QSERVER_H
