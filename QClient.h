@@ -1,7 +1,7 @@
 ﻿#ifndef QCLIENT_H
 #define QCLIENT_H
 
-#include "basic_client.h"
+//#include "basic_client.h"
 #include "QtSocket.h"
 #include "QSerializer.hpp"
 #include <cmath>
@@ -9,7 +9,7 @@
 #define DEFAULT_FREQ 1
 #define DEFAULT_SIZE 2
 
-class QClient: public Client{
+class QClient{
 public:
     QClient(const QHostAddress &recv, const quint16 &recvp, const int& freq = DEFAULT_FREQ,
             const int& dgramSize = DEFAULT_SIZE): recv_{recv}, recvp_{recvp},
@@ -19,15 +19,15 @@ public:
         socket->bind(QHostAddress::LocalHost, 0);
     }
 
-    void send(const QString &msg) override;
-    void setPacketSize(const int &size) override;
-    void setFrequency(const int &seconds) override;
+    void send(const QString &msg);
+    void setPacketSize(const int &size);
+    void setFrequency(const int &seconds);
 
-    ~QClient() override{}
+    ~QClient(){}
 
 private:
-    Serializer* serv;
-    Socket* socket;
+    QSerializer* serv;
+    QtSocket* socket;
     QHostAddress recv_;
     quint16 recvp_;
     int freq_;

@@ -1,12 +1,11 @@
 ﻿#ifndef QSERVER_H
 #define QSERVER_H
 
-#include "basic_server.h"
 #include "QSerializer.hpp"
 #include "QtSocket.h"
 #include <QDebug>
 
-class QServer: public BasicServer{
+class QServer{
 public:
     QServer(const QHostAddress &address, const quint16 &port){
         socket = new QtSocket;
@@ -14,13 +13,13 @@ public:
         serv = new QSerializer;
     }
 
-    void start() override;
-    void stop() override;
-    ~QServer() override{}
+    void start();
+    void stop();
+    ~QServer(){}
 
 private:
-    Serializer *serv;
-    Socket* socket;
+    QSerializer *serv;
+    QtSocket* socket;
     bool active = true;
 };
 

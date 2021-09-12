@@ -1,13 +1,13 @@
 ﻿#ifndef QSERIALIZER_H
 #define QSERIALIZER_H
-#include "serializer.h"
 #include <QDataStream>
+#include "dgrams.h"
 
-class QSerializer: public Serializer{
+class QSerializer{
 public:
-    QByteArray serialize(const Msg &msg) override;
-    Msg deserialize(QByteArray msg) override;
-    ~QSerializer() override{}
+    QByteArray serialize(const Msg &msg);
+    Msg deserialize(QByteArray msg);
+    ~QSerializer(){}
 };
 
 

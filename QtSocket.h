@@ -1,9 +1,8 @@
 ﻿#ifndef QTSOCKET_H
 #define QTSOCKET_H
-#include "basic_socket.h"
 #include <QUdpSocket>
 
-class QtSocket: public Socket{
+class QtSocket{
 public:
 
     QtSocket(){
@@ -11,13 +10,13 @@ public:
 //        QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(readDatagrams()));
     }
 
-    void close() override;
+    void close();
 
-    void bind(const QHostAddress &address, const quint16 &port) override;
+    void bind(const QHostAddress &address, const quint16 &port);
 
-    void send(const QByteArray &msg, const QHostAddress &address, const quint16 &port) override;
+    void send(const QByteArray &msg, const QHostAddress &address, const quint16 &port);
 
-    ~QtSocket() override{
+    ~QtSocket(){
         this->close();
     }
 
