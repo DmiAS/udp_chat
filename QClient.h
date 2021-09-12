@@ -3,7 +3,7 @@
 
 #include "QtSocket.h"
 #include "serializer.h"
-#include <memory>
+#include <QSharedPointer>
 #include <cmath>
 #include <QFile>
 
@@ -12,8 +12,8 @@
 
 class QClient{
 public:
-    QClient(std::shared_ptr<Socket> sock,
-            std::shared_ptr<Serializer> serializer,
+    QClient(QSharedPointer<Socket> sock,
+            QSharedPointer<Serializer> serializer,
             const int& freq = DEFAULT_FREQ,
             const int& dgramSize = DEFAULT_SIZE): freq_{freq}, dgramSize_{dgramSize}, serv{serializer}, socket{sock}{}
 
@@ -25,8 +25,8 @@ public:
     ~QClient(){}
 
 private:
-    std::shared_ptr<Serializer> serv;
-    std::shared_ptr<Socket> socket;
+    QSharedPointer<Serializer> serv;
+    QSharedPointer<Socket> socket;
     QHostAddress recv_;
     quint16 recvp_;
     int freq_;

@@ -1,7 +1,7 @@
 ﻿#include "user.h"
 
-User::User(std::shared_ptr<Socket> sock){
-    auto serializer = std::shared_ptr<Serializer>(new QSerializer);
-    srv = std::make_shared<QServer>(sock, serializer);
-    cli = std::make_shared<QClient>(sock, serializer);
+User::User(QSharedPointer<Socket> sock){
+    auto serializer = QSharedPointer<Serializer>(new QSerializer);
+    srv = QSharedPointer<QServer>(new QServer(sock, serializer));
+    cli = QSharedPointer<QClient>(new QClient(sock, serializer));
 }

@@ -8,10 +8,10 @@ class User
 {
 public:
     User() = delete;
-    User(std::shared_ptr<Socket> sock);
+    User(QSharedPointer<Socket> sock);
 private:
-    std::shared_ptr<QServer> srv;
-    std::shared_ptr<QClient> cli;
+    QSharedPointer<QServer> srv;
+    QSharedPointer<QClient> cli;
 };
 
 #endif // USER_H

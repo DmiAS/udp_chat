@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <QFile>
 
-QServer::QServer(std::shared_ptr<Socket> sock, std::shared_ptr<Serializer> serializer){
+QServer::QServer(QSharedPointer<Socket> sock, QSharedPointer<Serializer> serializer){
     socket = sock;
     serv = serializer;
     initConnections();
@@ -22,7 +22,6 @@ void QServer::stop(){
 }
 
 void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
-    qDebug() << "here";
     emit datarecved(addr, port, data.length()); // уведомление о приходе пакета любого вида
     auto msg = serv->deserialize(data);
     if (msg.msg_type == STRING_TYPE){

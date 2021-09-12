@@ -3,6 +3,7 @@
 QtSocket::QtSocket(const QHostAddress &address, const quint16 &port){
     socket = new QUdpSocket(this);
     socket->bind(address, port);
+    QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(readDatagrams()));
 }
 
 QtSocket::~QtSocket(){

@@ -5,12 +5,12 @@
 #include "basic_socket.h"
 #include <QDebug>
 #include <QMutex>
-#include <memory>
+#include <QSharedPointer>
 
 class QServer: public QObject{
     Q_OBJECT
 public:
-    QServer(std::shared_ptr<Socket>, std::shared_ptr<Serializer> serializer);
+    QServer(QSharedPointer<Socket>, QSharedPointer<Serializer> serializer);
 
     void start();
     void stop();
@@ -24,8 +24,8 @@ private:
     QMutex fileMu;
     QVector<Msg> chunks_msg;
     QVector<Msg> chunks_file;
-    std::shared_ptr<Serializer> serv;
-    std::shared_ptr<Socket> socket;
+    QSharedPointer<Serializer> serv;
+    QSharedPointer<Socket> socket;
     bool active = true;
 
 signals:
