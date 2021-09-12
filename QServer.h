@@ -26,11 +26,13 @@ private:
 
 signals:
     void msgends(QHostAddress);
+    void fileEnds(QHostAddress, const QString &fileName);
     void msg(QString, QHostAddress);
 
 private slots:
     void recv(QByteArray, QHostAddress, quint16);
     void buildMsg(QHostAddress);
+    void buildFile(QHostAddress, const QString &fileName);
 };
 
 

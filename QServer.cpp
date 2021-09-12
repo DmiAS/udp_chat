@@ -1,5 +1,6 @@
 ﻿#include "QServer.h"
 #include <algorithm>
+#include <QFile>
 
 QServer::QServer(const QHostAddress &address, const quint16 &port){
     socket = new QtSocket;
@@ -27,7 +28,12 @@ void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
             emit msgends(addr);
         }
     } else if (msg.msg_type ==  FILE_TYPE){
-
+        fileMu.lock();
+        chunks_file.push_back(msg);
+        fileMu.unlock();
+        if (msg.is_last){
+            emit fileEnds(addr, msg.fileName);
+        }
     }
 }
 
@@ -47,4 +53,25 @@ void QServer::buildMsg(QHostAddress addr){
     }
     qDebug() << "ends" << addr << res;
     emit msg(res, addr);
+}
+
+void QServer::buildFile(QHostAddress addr, const QString &fileName){
+    strMu.lock();
+    auto vec = chunks_file;
+    chunks_file.clear();
+    strMu.unlock();
+    // сортируем массив чанков, чтобы пакеты были в правильной последовательности
+    std::sort(vec.begin(), vec.end(), [](const Msg &val1, const Msg &val2){
+        return val1.index < val2.index;
+    });
+
+    QByteArray arr;
+    // собираем итоговый файл
+    for (auto &chunk: vec){
+        arr.append(chunk.buf);
+    }
+//    emit msg(res, addr);
+    QFile file(fileName);
+    file.write(arr);
+    qDebug() << "file written";
 }
