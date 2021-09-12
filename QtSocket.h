@@ -8,11 +8,7 @@ class QtSocket: public Socket{
     Q_OBJECT
 public:
 
-    QtSocket();
-
-    void close() override;
-
-    void bind(const QHostAddress &address, const quint16 &port) override;
+    QtSocket(const QHostAddress &address, const quint16 &port);
 
     void send(const QByteArray &msg, const QHostAddress &address, const quint16 &port) override;
 

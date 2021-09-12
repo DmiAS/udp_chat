@@ -11,9 +11,6 @@
 class Socket: public QObject{
     Q_OBJECT
 public:
-    virtual void close() = 0;
-
-    virtual void bind(const QHostAddress& address, const quint16 &port) = 0;
 
     virtual void send(const QByteArray &msg, const QHostAddress& address, const quint16 &port) = 0;
 

@@ -1,12 +1,12 @@
 ﻿#include "QtSocket.h"
 
-QtSocket::QtSocket(){
+QtSocket::QtSocket(const QHostAddress &address, const quint16 &port){
     socket = new QUdpSocket(this);
-    QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(readDatagrams()));
+    socket->bind(address, port);
 }
 
 QtSocket::~QtSocket(){
-    this->close();
+    socket->close();
 }
 
 void QtSocket::readDatagrams(){
@@ -20,15 +20,7 @@ void QtSocket::readDatagrams(){
     }
 }
 
-
-void QtSocket::bind(const QHostAddress &address, const quint16 &port) {
-    socket->bind(address, port);
-};
-
 void QtSocket::send(const QByteArray &msg, const QHostAddress &address, const quint16 &port){
     socket->writeDatagram(msg, address, port);
 }
 
-void QtSocket::close(){
-    socket->close();
-}

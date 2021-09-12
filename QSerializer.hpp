@@ -1,16 +1,17 @@
 ﻿#ifndef QSERIALIZER_H
 #define QSERIALIZER_H
 #include <QDataStream>
-#include "dgrams.h"
+#include "serializer.h"
 
-class QSerializer{
+class QSerializer: public Serializer{
 public:
-    QByteArray serialize(const Msg &msg);
-    Msg deserialize(QByteArray msg);
-    ~QSerializer(){}
+    QByteArray serialize(const Msg &msg) override;
+    Msg deserialize(QByteArray msg) override;
+    ~QSerializer() override{}
 };
 
-template <typename T> T get(QDataStream & str) {
+template <typename T>
+T get(QDataStream & str) {
    T value;
    str >> value;
    return value;

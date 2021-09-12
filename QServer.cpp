@@ -2,15 +2,17 @@
 #include <algorithm>
 #include <QFile>
 
-QServer::QServer(const QHostAddress &address, const quint16 &port){
-    socket = new QtSocket;
-    socket->bind(address, port);
-    serv = new QSerializer;
-    QObject::connect(socket, &Socket::dgramrecv, this, &QServer::recv);
+QServer::QServer(std::shared_ptr<Socket> sock, std::shared_ptr<Serializer> serializer){
+    socket = sock;
+    serv = serializer;
+    initConnections();
+}
+
+void QServer::initConnections(){
+    QObject::connect(socket.get(), &Socket::dgramrecv, this, &QServer::recv);
     QObject::connect(this, &QServer::msgends, this, &QServer::buildMsg);
     QObject::connect(this, &QServer::fileEnds, this, &QServer::buildFile);
 }
-
 
 void QServer::start(){
 }
@@ -20,6 +22,8 @@ void QServer::stop(){
 }
 
 void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
+    qDebug() << "here";
+    emit datarecved(addr, port, data.length()); // уведомление о приходе пакета любого вида
     auto msg = serv->deserialize(data);
     if (msg.msg_type == STRING_TYPE){
         strMu.lock();
@@ -66,15 +70,12 @@ void QServer::buildFile(QHostAddress addr, const QString &fileName){
         return val1.index < val2.index;
     });
 
-    QByteArray arr;
-    // собираем итоговый файл
-    for (auto &chunk: vec){
-        arr.append(chunk.buf);
-    }
-//    emit msg(res, addr);
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
-    file.write(arr);
-    qDebug() << "file written";
+    // собираем итоговый файл
+    for (auto &chunk: vec){
+        file.write(chunk.buf);
+    }
     file.close();
+    qDebug() << "file written";
 }

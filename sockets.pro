@@ -22,7 +22,8 @@ SOURCES += \
     QServer.cpp \
     QtSocket.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    user.cpp
 
 HEADERS += \
     QClient.h \
@@ -34,7 +35,8 @@ HEADERS += \
     basic_socket.h \
     dgrams.h \
     mainwindow.h \
-    serializer.h
+    serializer.h \
+    user.h
 
 FORMS += \
     mainwindow.ui

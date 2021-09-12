@@ -1,9 +1,9 @@
 ﻿#ifndef QCLIENT_H
 #define QCLIENT_H
 
-//#include "basic_client.h"
 #include "QtSocket.h"
-#include "QSerializer.hpp"
+#include "serializer.h"
+#include <memory>
 #include <cmath>
 #include <QFile>
 
@@ -12,24 +12,21 @@
 
 class QClient{
 public:
-    QClient(const QHostAddress &recv, const quint16 &recvp, const int& freq = DEFAULT_FREQ,
-            const int& dgramSize = DEFAULT_SIZE): recv_{recv}, recvp_{recvp},
-            freq_{freq}, dgramSize_{dgramSize}{
-        socket = new QtSocket;
-        serv = new QSerializer;
-        socket->bind(QHostAddress::LocalHost, 0);
-    }
+    QClient(std::shared_ptr<Socket> sock,
+            std::shared_ptr<Serializer> serializer,
+            const int& freq = DEFAULT_FREQ,
+            const int& dgramSize = DEFAULT_SIZE): freq_{freq}, dgramSize_{dgramSize}, serv{serializer}, socket{sock}{}
 
-    void send(const QString &msg);
-    void sendFile(QFile &f, const QString &fileName);
+    void send(const QString &msg, QHostAddress addr, quint16 port);
+    void sendFile(QFile &f, const QString &fileName, QHostAddress addr, quint16 port);
     void setPacketSize(const int &size);
     void setFrequency(const int &seconds);
 
     ~QClient(){}
 
 private:
-    QSerializer* serv;
-    QtSocket* socket;
+    std::shared_ptr<Serializer> serv;
+    std::shared_ptr<Socket> socket;
     QHostAddress recv_;
     quint16 recvp_;
     int freq_;
