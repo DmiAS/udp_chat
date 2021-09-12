@@ -19,12 +19,15 @@ void QServer::stop(){
 
 void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
     auto msg = serv->deserialize(data);
-    qDebug() << addr << port << msg.buf;
-    strMu.lock();
-    chunks_msg.push_back(msg);
-    strMu.unlock();
-    if (msg.is_last){
-        emit msgends(addr);
+    if (msg.msg_type == STRING_TYPE){
+        strMu.lock();
+        chunks_msg.push_back(msg);
+        strMu.unlock();
+        if (msg.is_last){
+            emit msgends(addr);
+        }
+    } else if (msg.msg_type ==  FILE_TYPE){
+
     }
 }
 
@@ -33,10 +36,12 @@ void QServer::buildMsg(QHostAddress addr){
     auto vec = chunks_msg;
     chunks_msg.clear();
     strMu.unlock();
+    // сортируем массив чанков, чтобы пакеты были в правильной последовательности
     std::sort(vec.begin(), vec.end(), [](const Msg &val1, const Msg &val2){
         return val1.index < val2.index;
     });
     QString res;
+    // собираем итоговое сообщение
     for (auto &chunk: vec){
         res.append(chunk.buf);
     }

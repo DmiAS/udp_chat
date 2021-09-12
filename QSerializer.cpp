@@ -8,6 +8,7 @@ Msg QSerializer::deserialize(QByteArray buf){
     res.buf = get<QString>(str);
     res.index = get<qint32>(str);
     res.is_last = get<quint8>(str);
+    res.fileName = get<QString>(str);
     return res;
 }
 
@@ -15,6 +16,6 @@ Msg QSerializer::deserialize(QByteArray buf){
 QByteArray QSerializer::serialize(const Msg &msg){
     QByteArray buf;
     QDataStream s(&buf, QIODevice::WriteOnly);
-    s << (quint8)msg.msg_type << msg.buf <<(qint32)msg.index << (quint8)msg.is_last;
+    s << (quint8)msg.msg_type << msg.buf <<(qint32)msg.index << (quint8)msg.is_last << msg.fileName;
     return buf;
 }

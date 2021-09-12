@@ -5,9 +5,10 @@
 #include "QtSocket.h"
 #include "QSerializer.hpp"
 #include <cmath>
+#include <QFile>
 
 #define DEFAULT_FREQ 1
-#define DEFAULT_SIZE 2
+#define DEFAULT_SIZE 5
 
 class QClient{
 public:
@@ -20,6 +21,7 @@ public:
     }
 
     void send(const QString &msg);
+    void sendFile(QFile f, const QString &fileName);
     void setPacketSize(const int &size);
     void setFrequency(const int &seconds);
 
@@ -33,23 +35,5 @@ private:
     int freq_;
     int dgramSize_;
 };
-
-void QClient::setFrequency(const int &seconds){
-    freq_ = seconds;
-}
-
-void QClient::setPacketSize(const int &size){
-    dgramSize_ = size;
-}
-
-void QClient::send(const QString &msg){
-    int cnt = std::ceil(float(msg.length()) / float(dgramSize_));
-    for (int i = 0; i < cnt; i++){
-        auto chunk = msg.mid(i * dgramSize_, dgramSize_);
-        Msg msg(STRING_TYPE, chunk, i, i == cnt - 1 ? true : false);
-        auto packet = serv->serialize(msg);
-        socket->send(packet, recv_, recvp_);
-    }
-}
 
 #endif // QCLIENT_H
