@@ -1,26 +1,29 @@
 ﻿#ifndef QTSOCKET_H
 #define QTSOCKET_H
+
+#include "basic_socket.h"
 #include <QUdpSocket>
 
-class QtSocket{
+class QtSocket: public Socket{
+//    Q_OBJECT
 public:
 
     QtSocket(){
-        socket = new QUdpSocket();
-//        QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(readDatagrams()));
+        socket = new QUdpSocket(this);
+        QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(readDatagrams()));
     }
 
-    void close();
+    void close() override;
 
-    void bind(const QHostAddress &address, const quint16 &port);
+    void bind(const QHostAddress &address, const quint16 &port) override;
 
-    void send(const QByteArray &msg, const QHostAddress &address, const quint16 &port);
+    void send(const QByteArray &msg, const QHostAddress &address, const quint16 &port) override;
 
-    ~QtSocket(){
+    ~QtSocket() override{
         this->close();
     }
 
-private:
+private slots:
     void readDatagrams();
 
 private:
