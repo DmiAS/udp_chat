@@ -21,7 +21,7 @@ public:
     }
 
     void send(const QString &msg);
-    void sendFile(QFile f, const QString &fileName);
+    void sendFile(QFile &f, const QString &fileName);
     void setPacketSize(const int &size);
     void setFrequency(const int &seconds);
 

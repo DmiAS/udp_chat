@@ -13,5 +13,8 @@ int main(int argc, char *argv[])
     QClient client(serverHost, serverPort);
     client.send("приветт");
     client.send("медвед");
+    QFile f("C:\\summer_prac\\hello.txt");
+    f.open(QIODevice::ReadOnly);
+    client.sendFile(f, "C:\\summer_prac\\new.txt");
     return a.exec();
 }

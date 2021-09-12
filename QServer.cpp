@@ -8,6 +8,7 @@ QServer::QServer(const QHostAddress &address, const quint16 &port){
     serv = new QSerializer;
     QObject::connect(socket, &Socket::dgramrecv, this, &QServer::recv);
     QObject::connect(this, &QServer::msgends, this, &QServer::buildMsg);
+    QObject::connect(this, &QServer::fileEnds, this, &QServer::buildFile);
 }
 
 
@@ -72,6 +73,8 @@ void QServer::buildFile(QHostAddress addr, const QString &fileName){
     }
 //    emit msg(res, addr);
     QFile file(fileName);
+    file.open(QIODevice::WriteOnly);
     file.write(arr);
     qDebug() << "file written";
+    file.close();
 }

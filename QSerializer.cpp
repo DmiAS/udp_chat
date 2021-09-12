@@ -5,7 +5,7 @@ Msg QSerializer::deserialize(QByteArray buf){
     QDataStream str(&buf, QIODevice::ReadOnly);
     Msg res;
     res.msg_type = get<quint8>(str);
-    res.buf = get<QString>(str);
+    res.buf = get<QByteArray>(str);
     res.index = get<qint32>(str);
     res.is_last = get<quint8>(str);
     res.fileName = get<QString>(str);
