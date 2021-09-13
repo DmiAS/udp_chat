@@ -55,7 +55,6 @@ void QServer::buildMsg(QHostAddress addr, quint16 port){
     for (auto &chunk: vec){
         res.append(chunk.buf);
     }
-    qDebug() << "ends" << addr << res;
 
     emit msg(addr, port, res);
 }
@@ -78,7 +77,5 @@ void QServer::buildFile(QHostAddress addr, quint16 port, const QString &fileName
     }
     f.close();
 
-    auto sender = QString("%1:%2").arg(addr.toString(), QString::number(port));
-    emit file(sender, fileName);
-    qDebug() << "file written";
+    emit file(addr, port, fileName);
 }

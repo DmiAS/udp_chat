@@ -10,6 +10,7 @@ User::User(QSharedPointer<Socket> sock){
 
     connect(srv.get(), &QServer::datarecved, this, &User::onchunkrecv);
     connect(srv.get(), &QServer::msg, this, &User::onmsgrcv);
+    connect(srv.get(), &QServer::file, this, &User::onfilercv);
 
 }
 
@@ -35,6 +36,7 @@ void User::onmsgrcv(QHostAddress addr, quint16 port, QString msg){
     emit msgrcv(sender, msg);
 }
 
-void User::onfilercv(QString sender, QString fileName){
+void User::onfilercv(QHostAddress addr, quint16 port, QString fileName){
+    auto sender = QString("%1:%2").arg(addr.toString(), QString::number(port));
     emit filercv(sender, fileName);
 }

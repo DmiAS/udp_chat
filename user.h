@@ -24,7 +24,7 @@ signals:
     void filercv(QString sender, QString fileName);
 private slots:
     void onmsgrcv(QHostAddress addr, quint16 port, QString msg);
-    void onfilercv(QString sender, QString file);
+    void onfilercv(QHostAddress addr, quint16 port, QString file);
     void onchunkrecv(QHostAddress, quint16, int);
 };
 

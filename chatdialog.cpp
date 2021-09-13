@@ -19,7 +19,8 @@ ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
     table->setHorizontalHeaderLabels(QStringList() << "Время" << "Отправитель" << "Размер");
 
     QDir dir(".");
-    lineEdit->setText(dir.absolutePath());
+    directory = dir.absolutePath();
+    lineEdit->setText(directory);
     lineEdit->setCursorPosition(0);
     lineEdit->setReadOnly(true);
     lineEdit->setAlignment(Qt::AlignLeft);
@@ -33,14 +34,7 @@ ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
     connect(&client, &User::msgrcv, this, &ChatDialog::on_msg_recv);
     connect(&srv, &User::msgrcv, this, &ChatDialog::on_msg_recv);
 
-//    connect(msg_line, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
-//    connect(msg_line, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
-//    connect(&client, SIGNAL(newMessage(QString,QString)),
-//            this, SLOT(appendMessage(QString,QString)));
-//    connect(&client, SIGNAL(newParticipant(QString)),
-//            this, SLOT(newParticipant(QString)));
-//    connect(&client, SIGNAL(participantLeft(QString)),
-//            this, SLOT(participantLeft(QString)));
+    connect(&srv, &User::filercv, this, &ChatDialog::on_file_recv);
 
     auto srv_data = srv.getAddrPort();
     auto cli_data = client.getAddrPort();
@@ -78,45 +72,22 @@ void ChatDialog::on_msg_recv(QString sender, QString msg){
     }
 }
 
-//void ChatDialog::newParticipant(const QString &nick)
-//{
-//    if (nick.isEmpty())
-//        return;
+void ChatDialog::on_file_recv(QString sender, QString fileName){
+    auto time = QDateTime::currentDateTime().toString();
 
-//    QColor color = textEdit->textColor();
-//    textEdit->setTextColor(Qt::gray);
-//    textEdit->append(tr("* %1 has joined").arg(nick));
-//    textEdit->setTextColor(color);
-//    listWidget->addItem(nick);
-//}
-
-//void ChatDialog::participantLeft(const QString &nick)
-//{
-//    if (nick.isEmpty())
-//        return;
-
-//    QList<QListWidgetItem *> items = listWidget->findItems(nick,
-//                                                           Qt::MatchExactly);
-//    if (items.isEmpty())
-//        return;
-
-//    delete items.at(0);
-//    QColor color = textEdit->textColor();
-//    textEdit->setTextColor(Qt::gray);
-//    textEdit->append(tr("* %1 has left").arg(nick));
-//    textEdit->setTextColor(color);
-//}
-
-//void ChatDialog::showInformation()
-//{
-//    if (listWidget->count() == 1) {
-//        QMessageBox::information(this, tr("Chat"),
-//                                 tr("Launch several instances of this "
-//                                    "program on your local network and "
-//                                    "start chatting!"));
-//    }
-//}
-
+    auto s = resolver[sender];
+    QTextCursor cursor(win->textCursor());
+    cursor.movePosition(QTextCursor::End);
+    QTextTable *table = cursor.insertTable(1, 2, tableFormat);
+    table->cellAt(0, 0).firstCursorPosition().insertText('<' + time + ":" + s + "> ");
+    table->cellAt(0, 1).firstCursorPosition().insertText("file" + fileName + "received");
+    QScrollBar *bar = win->verticalScrollBar();
+    bar->setValue(bar->maximum());
+    auto data = client.getAddrPort();
+    if (s == CLIENT){
+        srv.cli->send("Received your file with name: " + fileName, data.first, data.second);
+    }
+}
 
 void ChatDialog::on_send_msg_clicked()
 {
@@ -130,7 +101,7 @@ void ChatDialog::on_send_msg_clicked()
 
 void ChatDialog::on_send_file_clicked()
 {
-    QString file_path = QFileDialog::getOpenFileName(this, "Выберите файл", "C:\\");
+    QString file_path = QFileDialog::getOpenFileName(this, "Выберите файл", "C:\\summer_prac");
     QFile f(file_path);
     f.open(QIODevice::ReadOnly);
     if (!f.isOpen()){
@@ -138,8 +109,9 @@ void ChatDialog::on_send_file_clicked()
                                          "Файл не может быть открыт");
         return;
     }
-    //    auto data = srv.srv->getAddrPort();
-//    client.cli->sendFile(f, data.first, data.second);
+    auto data = srv.getAddrPort();
+    auto name = directory + "/" + QFileInfo(file_path).fileName();
+    client.cli->sendFile(f, name, data.first, data.second);
     f.close();
 }
 

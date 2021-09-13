@@ -33,7 +33,7 @@ signals:
     void msgends(QHostAddress, quint16);
     void fileEnds(QHostAddress, quint16, const QString &fileName);
     void msg(QHostAddress, quint16, QString);
-    void file(QString sender, QString fileName);
+    void file(QHostAddress, quint16, QString fileName);
     void datarecved(QHostAddress, quint16, int);
 
 private slots:

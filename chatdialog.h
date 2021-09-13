@@ -28,6 +28,7 @@ private slots:
     void updateTable(QString, QString, int);
 
     void on_msg_recv(QString sender, QString msg);
+    void on_file_recv(QString sender, QString msg);
 
     void on_send_msg_clicked();
 
