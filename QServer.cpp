@@ -22,8 +22,8 @@ void QServer::stop(){
 }
 
 void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
-    emit datarecved(addr, port, data.length()); // уведомление о приходе пакета любого вида
     auto msg = serv->deserialize(data);
+    emit datarecved(addr, port, msg.buf.length()); // уведомление о приходе пакета любого вида
     if (msg.msg_type == STRING_TYPE){
         strMu.lock();
         chunks_msg.push_back(msg);

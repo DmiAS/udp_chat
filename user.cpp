@@ -27,7 +27,6 @@ QPair<QHostAddress, quint16> User::getAddrPort() const{
 void User::onchunkrecv(QHostAddress addr, quint16 port, int len){
     auto s = QString("%1:%2").arg(addr.toString(), QString::number(port));
     auto t = QDateTime::currentDateTime().toString();
-    qDebug() << "info" << t << s << len;
     emit chunkrecv(t, s, len);
 }
 

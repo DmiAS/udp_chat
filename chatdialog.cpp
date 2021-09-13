@@ -3,6 +3,8 @@
 #include "chatdialog.h"
 #include <QScrollBar>
 
+#define SERVER "server"
+#define CLIENT "you"
 ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
     : QDialog(parent), client{client}, srv{srv}
 {
@@ -43,8 +45,8 @@ ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
     auto srv_data = srv.getAddrPort();
     auto cli_data = client.getAddrPort();
 
-    resolver[QString("%1:%2").arg(srv_data.first.toString(), QString::number(srv_data.second))] = "server";
-    resolver[QString("%1:%2").arg(cli_data.first.toString(), QString::number(cli_data.second))] = "you";
+    resolver[QString("%1:%2").arg(srv_data.first.toString(), QString::number(srv_data.second))] = SERVER;
+    resolver[QString("%1:%2").arg(cli_data.first.toString(), QString::number(cli_data.second))] = CLIENT;
 
     tableFormat.setBorder(0);
 }
@@ -70,6 +72,10 @@ void ChatDialog::on_msg_recv(QString sender, QString msg){
     table->cellAt(0, 1).firstCursorPosition().insertText(msg);
     QScrollBar *bar = win->verticalScrollBar();
     bar->setValue(bar->maximum());
+    auto data = client.getAddrPort();
+    if (s == CLIENT){
+        srv.cli->send("Received your msg: " + msg, data.first, data.second);
+    }
 }
 
 //void ChatDialog::newParticipant(const QString &nick)
@@ -146,10 +152,15 @@ void ChatDialog::on_pushButton_clicked()
 
 void ChatDialog::on_latency_editingFinished()
 {
-    qDebug() << "finished";
+    auto lat = latency->value();
+    int freq = lat * 100;
+    client.cli->setFrequency(freq);
+    srv.cli->setFrequency(freq);
 }
 
 void ChatDialog::on_packet_editingFinished()
 {
-
+    auto val = packet->value();
+    client.cli->setPacketSize(val);
+    srv.cli->setPacketSize(val);
 }
