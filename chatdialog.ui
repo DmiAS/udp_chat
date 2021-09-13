@@ -81,10 +81,14 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="latency"/>
-      </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QSpinBox" name="latency">
+      <property name="maximum">
+       <number>5000</number>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">

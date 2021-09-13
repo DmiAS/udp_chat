@@ -1,5 +1,5 @@
 ﻿#include "QClient.h"
-
+#include <QTest>
 
 void QClient::setFrequency(const int &seconds){
     freq_ = seconds;
@@ -15,6 +15,7 @@ void QClient::send(const QString &msg, QHostAddress addr, quint16 port){
         auto chunk = msg.mid(i * dgramSize_, dgramSize_);
         Msg msg(STRING_TYPE, chunk.toUtf8(), i, i == cnt - 1 ? true : false);
         auto packet = serv->serialize(msg);
+        QTest::qWait(freq_);
         socket->send(packet, addr, port);
     }
 }

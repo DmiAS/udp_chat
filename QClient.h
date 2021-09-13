@@ -7,7 +7,7 @@
 #include <cmath>
 #include <QFile>
 
-#define DEFAULT_FREQ 1
+#define DEFAULT_FREQ 0
 #define DEFAULT_SIZE 5
 
 class QClient{

@@ -153,9 +153,8 @@ void ChatDialog::on_pushButton_clicked()
 void ChatDialog::on_latency_editingFinished()
 {
     auto lat = latency->value();
-    int freq = lat * 100;
-    client.cli->setFrequency(freq);
-    srv.cli->setFrequency(freq);
+    client.cli->setFrequency(lat);
+    srv.cli->setFrequency(lat);
 }
 
 void ChatDialog::on_packet_editingFinished()
