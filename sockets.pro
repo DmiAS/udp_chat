@@ -21,8 +21,8 @@ SOURCES += \
     QSerializer.cpp \
     QServer.cpp \
     QtSocket.cpp \
+    chatdialog.cpp \
     main.cpp \
-    mainwindow.cpp \
     user.cpp
 
 HEADERS += \
@@ -33,13 +33,13 @@ HEADERS += \
     basic_client.h \
     basic_server.h \
     basic_socket.h \
+    chatdialog.h \
     dgrams.h \
-    mainwindow.h \
     serializer.h \
     user.h
 
 FORMS += \
-    mainwindow.ui
+    chatdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

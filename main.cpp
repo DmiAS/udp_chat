@@ -2,12 +2,13 @@
 #include "QServer.h"
 #include "QClient.h"
 #include "QSerializer.hpp"
+#include "chatdialog.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
+    ChatDialog w;
+    w.show();
     auto host = QHostAddress::LocalHost;
     quint16 serverPort = 9000;
 
