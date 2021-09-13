@@ -15,8 +15,8 @@ public:
     ChatDialog(QWidget *parent = 0);
     ChatDialog(const User &client, const User &srv, QWidget *parent = 0);
 
-public slots:
-    void appendMessage(const QString &from, const QString &message);
+//public slots:
+//    void appendMessage(const QString &from, const QString &message);
 
 private slots:
 //    void returnPressed();
@@ -25,6 +25,8 @@ private slots:
 //    void showInformation();
 
     void updateTable(QString, QString, int);
+
+    void on_msg_recv(QString sender, QString msg);
 
     void on_send_msg_clicked();
 

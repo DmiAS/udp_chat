@@ -15,3 +15,11 @@ void User::onchunkrecv(QHostAddress addr, quint16 port, int len){
     auto t = QDateTime::currentDateTime().toString();
     emit chunkrecv(t, s, len);
 }
+
+void User::onmsgrcv(QString sender, QString msg){
+    emit msgrcv(sender, msg);
+}
+
+void User::onfilercv(QString sender, QString fileName){
+    emit filercv(sender, fileName);
+}

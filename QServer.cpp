@@ -33,19 +33,19 @@ void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
         chunks_msg.push_back(msg);
         strMu.unlock();
         if (msg.is_last){
-            emit msgends(addr);
+            emit msgends(addr, port);
         }
     } else if (msg.msg_type ==  FILE_TYPE){
         fileMu.lock();
         chunks_file.push_back(msg);
         fileMu.unlock();
         if (msg.is_last){
-            emit fileEnds(addr, msg.fileName);
+            emit fileEnds(addr, port, msg.fileName);
         }
     }
 }
 
-void QServer::buildMsg(QHostAddress addr){
+void QServer::buildMsg(QHostAddress addr, quint16 port){
     strMu.lock();
     auto vec = chunks_msg;
     chunks_msg.clear();
@@ -60,10 +60,12 @@ void QServer::buildMsg(QHostAddress addr){
         res.append(chunk.buf);
     }
     qDebug() << "ends" << addr << res;
-    emit msg(res, addr);
+
+    auto sender = QString("%s:%d").arg(addr.toString(), port);
+    emit msg(sender, res);
 }
 
-void QServer::buildFile(QHostAddress addr, const QString &fileName){
+void QServer::buildFile(QHostAddress addr, quint16 port, const QString &fileName){
     strMu.lock();
     auto vec = chunks_file;
     chunks_file.clear();
@@ -73,12 +75,15 @@ void QServer::buildFile(QHostAddress addr, const QString &fileName){
         return val1.index < val2.index;
     });
 
-    QFile file(fileName);
-    file.open(QIODevice::WriteOnly);
+    QFile f(fileName);
+    f.open(QIODevice::WriteOnly);
     // собираем итоговый файл
     for (auto &chunk: vec){
-        file.write(chunk.buf);
+        f.write(chunk.buf);
     }
-    file.close();
+    f.close();
+
+    auto sender = QString("%s:%d").arg(addr.toString(), port);
+    emit file(sender, fileName);
     qDebug() << "file written";
 }

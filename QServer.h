@@ -31,15 +31,16 @@ private:
     bool active = true;
 
 signals:
-    void msgends(QHostAddress);
-    void fileEnds(QHostAddress, const QString &fileName);
-    void msg(QString, QHostAddress);
+    void msgends(QHostAddress, quint16);
+    void fileEnds(QHostAddress, quint16, const QString &fileName);
+    void msg(QString sender, QString);
+    void file(QString sender, QString fileName);
     void datarecved(QHostAddress, quint16, int);
 
 private slots:
     void recv(QByteArray, QHostAddress, quint16);
-    void buildMsg(QHostAddress);
-    void buildFile(QHostAddress, const QString &fileName);
+    void buildMsg(QHostAddress, quint16);
+    void buildFile(QHostAddress, quint16, const QString &fileName);
 };
 
 

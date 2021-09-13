@@ -15,7 +15,11 @@ public:
     QSharedPointer<QClient> cli;
 signals:
     void chunkrecv(QString, QString, int);
+    void msgrcv(QString sender, QString msg);
+    void filercv(QString sender, QString fileName);
 private slots:
+    void onmsgrcv(QString sender, QString msg);
+    void onfilercv(QString sender, QString file);
     void onchunkrecv(QHostAddress, quint16, int);
 };
 

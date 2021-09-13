@@ -1,7 +1,7 @@
 ﻿#include <QtGui>
 
 #include "chatdialog.h"
-
+#include <QScrollBar>
 
 ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
     : QDialog(parent)
@@ -26,6 +26,10 @@ ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
     latency->setValue(DEFAULT_FREQ);
 
     connect(&client, &User::chunkrecv, this, &ChatDialog::updateTable);
+    connect(&srv, &User::chunkrecv, this, &ChatDialog::updateTable);
+
+    connect(&client, &User::msgrcv, this, &ChatDialog::on_msg_recv);
+    connect(&srv, &User::msgrcv, this, &ChatDialog::on_msg_recv);
 
 //    connect(msg_line, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
 //    connect(msg_line, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
@@ -50,20 +54,17 @@ void ChatDialog::updateTable(QString date, QString name, int len){
 }
 
 
-void ChatDialog::appendMessage(const QString &from, const QString &message)
-{
-    if (from.isEmpty() || message.isEmpty())
-        return;
+void ChatDialog::on_msg_recv(QString sender, QString msg){
+    auto time = QDateTime::currentDateTime().toString();
 
     QTextCursor cursor(win->textCursor());
     cursor.movePosition(QTextCursor::End);
     QTextTable *table = cursor.insertTable(1, 2, tableFormat);
-    table->cellAt(0, 0).firstCursorPosition().insertText('<' + from + "> ");
-    table->cellAt(0, 1).firstCursorPosition().insertText(message);
+    table->cellAt(0, 0).firstCursorPosition().insertText('<' + time + ":" + sender + "> ");
+    table->cellAt(0, 1).firstCursorPosition().insertText(msg);
     QScrollBar *bar = win->verticalScrollBar();
-//    bar->setValue(bar->maximum());
+    bar->setValue(bar->maximum());
 }
-
 
 //void ChatDialog::newParticipant(const QString &nick)
 //{
@@ -110,6 +111,7 @@ void ChatDialog::on_send_msg_clicked()
     QString text = msg_line->toPlainText();
     if (text.isEmpty())
         return;
+    on_msg_recv("i", text);
 //    auto data = srv.srv->getAddrPort();
 //    client.cli->send(text, data.first, data.second);
     msg_line->clear();
