@@ -80,7 +80,7 @@ void ChatDialog::on_file_recv(QString sender, QString fileName){
     cursor.movePosition(QTextCursor::End);
     QTextTable *table = cursor.insertTable(1, 2, tableFormat);
     table->cellAt(0, 0).firstCursorPosition().insertText('<' + time + ":" + s + "> ");
-    table->cellAt(0, 1).firstCursorPosition().insertText("file" + fileName + "received");
+    table->cellAt(0, 1).firstCursorPosition().insertText("file>>>>>" + fileName + "<<<<<received");
     QScrollBar *bar = win->verticalScrollBar();
     bar->setValue(bar->maximum());
     auto data = client.getAddrPort();
