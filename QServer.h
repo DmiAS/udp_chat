@@ -15,7 +15,6 @@ public:
     void start();
     void stop();
 
-    QPair<QHostAddress, quint16> getAddrPort();
     ~QServer() = default;
 
 private:
@@ -33,7 +32,7 @@ private:
 signals:
     void msgends(QHostAddress, quint16);
     void fileEnds(QHostAddress, quint16, const QString &fileName);
-    void msg(QString sender, QString);
+    void msg(QHostAddress, quint16, QString);
     void file(QString sender, QString fileName);
     void datarecved(QHostAddress, quint16, int);
 

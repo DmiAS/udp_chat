@@ -4,7 +4,7 @@
 #include <QScrollBar>
 
 ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), client{client}, srv{srv}
 {
     setupUi(this);
 
@@ -40,27 +40,33 @@ ChatDialog::ChatDialog(const User &client, const User &srv, QWidget *parent)
 //    connect(&client, SIGNAL(participantLeft(QString)),
 //            this, SLOT(participantLeft(QString)));
 
-    myNickName = "client.nickName()";
-//    newParticipant(myNickName);
+    auto srv_data = srv.getAddrPort();
+    auto cli_data = client.getAddrPort();
+
+    resolver[QString("%1:%2").arg(srv_data.first.toString(), QString::number(srv_data.second))] = "server";
+    resolver[QString("%1:%2").arg(cli_data.first.toString(), QString::number(cli_data.second))] = "you";
+
     tableFormat.setBorder(0);
-    QTimer::singleShot(10 * 1000, this, SLOT(showInformation()));
 }
 
 void ChatDialog::updateTable(QString date, QString name, int len){
-    table->insertRow(table->rowCount());
-    table->setItem(table->rowCount(), 0, new QTableWidgetItem(date));
-    table->setItem(table->rowCount(), 1, new QTableWidgetItem(name));
-    table->setItem(table->rowCount(), 2, new QTableWidgetItem(len));
+    auto sender = resolver[name];
+    int i = table->rowCount();
+    table->insertRow(i);
+    table->setItem(i, 0, new QTableWidgetItem(date));
+    table->setItem(i, 1, new QTableWidgetItem(sender));
+    table->setItem(i, 2, new QTableWidgetItem(QString::number(len)));
 }
 
 
 void ChatDialog::on_msg_recv(QString sender, QString msg){
     auto time = QDateTime::currentDateTime().toString();
 
+    auto s = resolver[sender];
     QTextCursor cursor(win->textCursor());
     cursor.movePosition(QTextCursor::End);
     QTextTable *table = cursor.insertTable(1, 2, tableFormat);
-    table->cellAt(0, 0).firstCursorPosition().insertText('<' + time + ":" + sender + "> ");
+    table->cellAt(0, 0).firstCursorPosition().insertText('<' + time + ":" + s + "> ");
     table->cellAt(0, 1).firstCursorPosition().insertText(msg);
     QScrollBar *bar = win->verticalScrollBar();
     bar->setValue(bar->maximum());
@@ -111,9 +117,8 @@ void ChatDialog::on_send_msg_clicked()
     QString text = msg_line->toPlainText();
     if (text.isEmpty())
         return;
-    on_msg_recv("i", text);
-//    auto data = srv.srv->getAddrPort();
-//    client.cli->send(text, data.first, data.second);
+    auto data = srv.getAddrPort();
+    client.cli->send(text, data.first, data.second);
     msg_line->clear();
 }
 

@@ -21,10 +21,6 @@ void QServer::stop(){
 
 }
 
-QPair<QHostAddress, quint16> QServer::getAddrPort(){
-    return socket->getAddrPort();
-}
-
 void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
     emit datarecved(addr, port, data.length()); // уведомление о приходе пакета любого вида
     auto msg = serv->deserialize(data);
@@ -61,8 +57,7 @@ void QServer::buildMsg(QHostAddress addr, quint16 port){
     }
     qDebug() << "ends" << addr << res;
 
-    auto sender = QString("%s:%d").arg(addr.toString(), port);
-    emit msg(sender, res);
+    emit msg(addr, port, res);
 }
 
 void QServer::buildFile(QHostAddress addr, quint16 port, const QString &fileName){
@@ -83,7 +78,7 @@ void QServer::buildFile(QHostAddress addr, quint16 port, const QString &fileName
     }
     f.close();
 
-    auto sender = QString("%s:%d").arg(addr.toString(), port);
+    auto sender = QString("%1:%2").arg(addr.toString(), QString::number(port));
     emit file(sender, fileName);
     qDebug() << "file written";
 }

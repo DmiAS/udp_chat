@@ -5,6 +5,7 @@
 #include "ui_chatdialog.h"
 #include <QTextTableFormat>
 #include <QMessageBox>
+#include <QMap>
 #include "user.h"
 
 class ChatDialog : public QDialog, private Ui::ChatDialog
@@ -39,6 +40,7 @@ private slots:
     void on_packet_editingFinished();
 
 private:
+    QMap<QString, QString> resolver;
     QString directory;
     User client, srv;
     QString myNickName;

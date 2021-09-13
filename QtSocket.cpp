@@ -7,7 +7,7 @@ QtSocket::QtSocket(const QHostAddress &address, const quint16 &port): addr{addre
 }
 
 QPair<QHostAddress, quint16> QtSocket::getAddrPort(){
-    return QPair<QHostAddress, quint16>(addr, port);
+    return QPair<QHostAddress, quint16>(addr, socket->localPort());
 }
 
 QtSocket::~QtSocket(){

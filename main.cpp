@@ -15,10 +15,6 @@ int main(int argc, char *argv[])
     QSharedPointer<Socket> clientSocket = QSharedPointer<QtSocket>(new QtSocket(host, 0));
     QSharedPointer<Serializer> serv = QSharedPointer<QSerializer>(new QSerializer);
 
-//    QServer server(serverSocket, serv);
-////    server.start();
-//    QClient client(clientSocket, serv);
-
     User cli(clientSocket);
     User srv(serverSocket);
 
