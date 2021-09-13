@@ -12,12 +12,16 @@ public:
 
     void send(const QByteArray &msg, const QHostAddress &address, const quint16 &port) override;
 
+    QPair<QHostAddress, quint16> getAddrPort() override;
+
     ~QtSocket() override;
 
 private slots:
     void readDatagrams();
 
 private:
+    QHostAddress addr;
+    quint16 port;
     QUdpSocket *socket;
 };
 

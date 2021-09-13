@@ -21,6 +21,10 @@ void QServer::stop(){
 
 }
 
+QPair<QHostAddress, quint16> QServer::getAddrPort(){
+    return socket->getAddrPort();
+}
+
 void QServer::recv(QByteArray data, QHostAddress addr, quint16 port){
     emit datarecved(addr, port, data.length()); // уведомление о приходе пакета любого вида
     auto msg = serv->deserialize(data);

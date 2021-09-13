@@ -13,6 +13,7 @@ class Socket: public QObject{
 public:
 
     virtual void send(const QByteArray &msg, const QHostAddress& address, const quint16 &port) = 0;
+    virtual QPair<QHostAddress, quint16> getAddrPort() = 0;
 
     virtual ~Socket() = default;
 

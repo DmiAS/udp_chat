@@ -1,9 +1,13 @@
 ﻿#include "QtSocket.h"
 
-QtSocket::QtSocket(const QHostAddress &address, const quint16 &port){
+QtSocket::QtSocket(const QHostAddress &address, const quint16 &port): addr{address}, port{port}{
     socket = new QUdpSocket(this);
     socket->bind(address, port);
     QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(readDatagrams()));
+}
+
+QPair<QHostAddress, quint16> QtSocket::getAddrPort(){
+    return QPair<QHostAddress, quint16>(addr, port);
 }
 
 QtSocket::~QtSocket(){

@@ -28,5 +28,4 @@ void QClient::sendFile(QFile &f, const QString &fileName, QHostAddress addr, qui
         auto packet = serv->serialize(msg);
         socket->send(packet, addr, port);
     }
-    qDebug() << "sented file";
 }

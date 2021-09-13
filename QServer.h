@@ -14,6 +14,8 @@ public:
 
     void start();
     void stop();
+
+    QPair<QHostAddress, quint16> getAddrPort();
     ~QServer() = default;
 
 private:
